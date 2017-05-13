@@ -1,20 +1,30 @@
-## Advanced Lane Finding
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+## **Advanced Lane Finding Pipeline** 
+
+[//]: # (Image References)
+
+[image1]: ./calibration_test/comb_calibration3.jpg "Calibration output sample 1"
+[image2]: ./calibration_test/comb_calibration17.jpg "Calibration output sample 2"
+[image3]: ./output_images/test1_final.png "Final output of Test 1 Image"
+[image4]: ./output_images/test1_binary.png "Binary output of thresholding Test 1 Image"
+[image5]: ./output_images/test1_binary_wrapped.png "apply prespective transformation on Binary output of thresholding Test 1 Image"
+[image6]: ./output_images/test1_search_area.png "search area in Test 1 Image"
+[image7]: ./output_images/test4_final.png "Final output of Test 4 Image"
+[image8]: ./output_images/test6_final.png "Final output of Test 4 Image"
+[image9]: ./output_images/straight_lines1_final.png "Final output of straight lines 1 Image"
+[image10]: ./output_images/straight_lines2_final.png "Final output of straight lines 2 Image"
 
 
-In this project, your goal is to write a software pipeline to identify the lane boundaries in a video, but the main output or product we want you to create is a detailed writeup of the project.  Check out the [writeup template](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup.  
-
-Creating a great writeup:
+Overview
 ---
-A great writeup should include the rubric points as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
+When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
+In this project, The main goal is to write a software pipeline to identify the lane boundaries in a video using advanced Computer vision techniques starting from camera caliaration procedure to detect and annotate Ego lane and calculate some characteristic of these lanes (i.e. start position of lane , radius of curvature, ...etc)
+
+![alt text][image9] ![alt text][image7]
 
 The Project
 ---
-
 The goals / steps of this project are the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
@@ -25,11 +35,3 @@ The goals / steps of this project are the following:
 * Determine the curvature of the lane and vehicle position with respect to center.
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
-
-The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing your pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
-
-To help the reviewer examine your work, please save examples of the output from each stage of your pipeline in the folder called `ouput_images`, and include a description in your writeup for the project of what each image shows.    The video called `project_video.mp4` is the video your pipeline should work well on.  
-
-The `challenge_video.mp4` video is an extra (and optional) challenge for you if you want to test your pipeline under somewhat trickier conditions.  The `harder_challenge.mp4` video is another optional challenge and is brutal!
-
-If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
