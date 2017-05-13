@@ -9,12 +9,13 @@
 [image5]: ./output_images/test1_binary_wrapped "apply prespective transformation on Binary output of thresholding Test 1 Image"
 [image6]: ./output_images/test1_search_area "search area in Test 1 Image"
 [image7]: ./output_images/test4_final "Final output of Test 4 Image"
-[image8]: ./output_images/test6_final "Final output of Test 4 Image"
+[image8]: ./output_images/test6_final "Final output of Test 6 Image"
 [image9]: ./output_images/straight_lines1_final "Final output of straight lines 1 Image"
 [image10]: ./output_images/straight_lines2_final "Final output of straight lines 2 Image"
 [image11]: ./readme_images/camera_distorsion.png "Camera Distortion Problem"
 [image12]: ./readme_images/curvature.jpg "Lane Polynomial equation"
 
+[image13]: ./output_images/project_video_out.gif "Project Video Output"
 
 Overview
 ---
@@ -43,17 +44,26 @@ The goals / steps of this project are the following:
 
 ### **Camera calibration**
 ![alt text][image11]
+![alt text][image1]
+![alt text][image2]
 
+### **Color transforms**
+![alt text][image4]
 
+### **Perspective Transformation (Bird Eye View)**
+![alt text][image5]
 
+### **Lane Pixel Detection **
+![alt text][image12]
+![alt text][image6]
 
+### **Final Output**
+![alt text][image3]
+![alt text][image8]
 
-
-
-
-
-
-
+Final Output of Lane Finding Pipeline
+---
+![alt text][image13]
 
 Potential shortcomings
 ---
