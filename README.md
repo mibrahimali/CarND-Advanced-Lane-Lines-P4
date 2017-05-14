@@ -70,19 +70,38 @@ on left Distorted images and on right undistorted ones
 
 ### **Color transforms**
 At this point, we have an undistorted camera images. we use combination of techniques to detect potintial position of lane lines as follow:
+
 1- transforming image to HSV color space and masking only white and yellow colors (lane lines normaly are in white and yellow) and binary thershold output.
 ![alt text][image15]
+
 2- transforming image to HLS color space and thershold S channel 
 ![alt text][image16]
+
 3- using Sobel Operator along the x-axis to calculate gradient of image color over RGB image space
 ![alt text][image17]
+
 4- combining all these output in on single binary image (shown bellow sample)
 ![alt text][image4]
 
 ### **Perspective Transformation (Bird Eye View)**
+Next, we use cv2.getPerspectiveTransform() and cv2.warpPerspective() functions to transform this binary image to get a bird’s-eye view image to search for lanes 
+For this, we first define a set of source points and destination points. these points were hardcoded and verified by try and error methodolgy 
+as follow :
+
+
+| Source points | Destination points 	| 
+|:-------------:|:---------------------:| 
+| [250,670]    	| [250,720]   			| 
+| [1050,670]   	| [1000,720] 			|
+| [590,450]		| [250,0]				|
+| [690,450]	    | [1000,0]   			|
+
+We use this transformation matrix and binary image as input to cv2.warpPerspective(). We get output here a bird-eye view image of our binary image.
+
 ![alt text][image5]
 
-### **Lane Pixel Detection **
+### **Lane Pixel Detection**
+
 ![alt text][image12]
 ![alt text][image6]
 

@@ -363,6 +363,9 @@ class LaneFinder:
         cv2.putText(result, 'Right Lane Radius of Curvature = {} m'.format(int(self.right_lane.radius_of_curvature)),
                     (20, 100), font, 1, (255, 255, 255), 2)
 
+        cv2.putText(result, 'Vehicle Offset of lane center  = {} m'.format(np.abs(self.right_lane.line_base_pos - self.left_lane.line_base_pos)),
+                    (20, 150), font, 1, (255, 255, 255), 2)
+
         return result
 
     def process(self, img):
@@ -437,16 +440,16 @@ if __name__ == "__main__":
     challenge_clip = clip2.fl_image(video_process)
     challenge_clip.write_videofile(challenge_output, audio=False)
 
-    advance_lane_finder = LaneFinder()
-    challenge_output = 'challenge_video_out.mp4'
-    clip2 = VideoFileClip('challenge_video.mp4')
-    challenge_clip = clip2.fl_image(video_process)
-    challenge_clip.write_videofile(challenge_output, audio=False)
-
-
-
-    advance_lane_finder = LaneFinder()
-    challenge_output = 'harder_challenge_video_out_grad_x.mp4'
-    clip2 = VideoFileClip('harder_challenge_video.mp4')
-    challenge_clip = clip2.fl_image(video_process)
-    challenge_clip.write_videofile(challenge_output, audio=False)
+    # advance_lane_finder = LaneFinder()
+    # challenge_output = 'challenge_video_out.mp4'
+    # clip2 = VideoFileClip('challenge_video.mp4')
+    # challenge_clip = clip2.fl_image(video_process)
+    # challenge_clip.write_videofile(challenge_output, audio=False)
+    #
+    #
+    #
+    # advance_lane_finder = LaneFinder()
+    # challenge_output = 'harder_challenge_video_out_grad_x.mp4'
+    # clip2 = VideoFileClip('harder_challenge_video.mp4')
+    # challenge_clip = clip2.fl_image(video_process)
+    # challenge_clip.write_videofile(challenge_output, audio=False)
