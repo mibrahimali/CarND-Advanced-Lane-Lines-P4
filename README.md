@@ -14,15 +14,13 @@
 [image10]: ./output_images/straight_lines2_final "Final output of straight lines 2 Image"
 [image11]: ./readme_images/camera_distorsion.png "Camera Distortion Problem"
 [image12]: ./readme_images/curvature.jpg "Lane Polynomial equation"
-
 [image13]: ./output_images/project_video_out.gif "Project Video Output"
 [image14]: ./output_images/challenge_video_out.gif "Challenge Video Output"
-
 [image15]: ./readme_images/hsv.png "test 1 hsv color space"
 [image16]: ./readme_images/hls.png "test 1 hls color space"
 [image17]: ./readme_images/sobel_x.png "test 1 gradient in x axis"
 [image18]: ./readme_images/hist.png "histogram of wrapped test 1 image"
-[image18]: ./readme_images/window_search.png "window search wrapped test 1 image"
+[image19]: ./readme_images/window_search.png "window search wrapped test 1 image"
 
 Overview
 ---
@@ -101,11 +99,27 @@ We use this transformation matrix and binary image as input to cv2.warpPerspecti
 ![alt text][image5]
 
 ### **Lane Pixel Detection**
-
+Now we have a binary image of potintail area where we can find our lanes, we can search for lane pixels and then fit a polynomial of degree 2 using these pixels to get lane lines.
 ![alt text][image12]
+
+for this we used window search based on Histogram of binary image as follow:
+
+1- calculate Histogram of lower half of image
+![alt text][image18]
+
+2- using window search to cluster all possible pixels and associated with correct lane line
+![alt text][image19]
+
+this step only executed in case of first detection or we lost tracking of lane poition. but after we know potintial area where lanes are we can search for them inside a marginal space
 ![alt text][image6]
 
+3- after we fit a polynomial for the current detection we check current lane base position and decide if this detection is correct or not, if correct detection we apply moving averageing filtering to smooth polynomial coeff. using last 10 times detection. 
+
+4- calculate radius of curvature of lane and vehicle offset w.r.t lane center position 
+
 ### **Final Output**
+for the final output we wrap the image back to the correct image plane using the inverse prespective transformation matrix. and visualize lane area as overlay on the original image 
+
 ![alt text][image3]
 ![alt text][image8]
 
