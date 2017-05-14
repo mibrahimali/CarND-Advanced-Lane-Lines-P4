@@ -70,15 +70,19 @@ on left Distorted images and on right undistorted ones
 At this point, we have an undistorted camera images. we use combination of techniques to detect potintial position of lane lines as follow:
 
 1- transforming image to HSV color space and masking only white and yellow colors (lane lines normaly are in white and yellow) and binary thershold output.
+this take place in LaneFinder class found in lines (119-140) in "advanced_lanes_finder.py" file  
 ![alt text][image15]
 
-2- transforming image to HLS color space and thershold S channel 
+2- transforming image to HLS color space and thershold S channel.
+this take place in LaneFinder class found in lines (108-117) in "advanced_lanes_finder.py" file   
 ![alt text][image16]
 
 3- using Sobel Operator along the x-axis to calculate gradient of image color over RGB image space
+this take place in LaneFinder class found in lines (142-162) in "advanced_lanes_finder.py" file  
 ![alt text][image17]
 
 4- combining all these output in on single binary image (shown bellow sample)
+this take place in LaneFinder class found in lines (371-388) in "advanced_lanes_finder.py" file  
 ![alt text][image4]
 
 ### **Perspective Transformation (Bird Eye View)**
@@ -95,6 +99,7 @@ as follow :
 | [690,450]	    | [1000,0]   			|
 
 We use this transformation matrix and binary image as input to cv2.warpPerspective(). We get output here a bird-eye view image of our binary image.
+this take place in LaneFinder class found in lines (168-175) in "advanced_lanes_finder.py" file  
 
 ![alt text][image5]
 
@@ -115,13 +120,18 @@ this step only executed in case of first detection or we lost tracking of lane p
 
 3- after we fit a polynomial for the current detection we check current lane base position and decide if this detection is correct or not, if correct detection we apply moving averageing filtering to smooth polynomial coeff. using last 10 times detection. 
 
+this take place in LaneLine class found in lines (16-94) in "advanced_lanes_finder.py" file  
+
 4- calculate radius of curvature of lane and vehicle offset w.r.t lane center position 
+this take place in LaneFinder class found in lines (190-300) in "advanced_lanes_finder.py" file  
 
 ### **Final Output**
 for the final output we wrap the image back to the correct image plane using the inverse prespective transformation matrix. and visualize lane area as overlay on the original image 
 
 ![alt text][image3]
 ![alt text][image8]
+
+this take place in LaneFinder class found in lines (330-370) in "advanced_lanes_finder.py" file  
 
 Final Output of Lane Finding Pipeline
 ---
