@@ -73,8 +73,8 @@ def hls_select(img, thresh=(0, 255)):
 
 #reading in an image
 # image = mpimg.imread('test_images/straight_lines1.jpg')
-# image = mpimg.imread('test_images/test1.jpg')
-image = mpimg.imread('test_images/test2.jpg')
+image = mpimg.imread('test_images/test1.jpg')
+# image = mpimg.imread('test_images/test2.jpg')
 # image = mpimg.imread('test_images/test3.jpg')
 # image = mpimg.imread('test_images/test6.jpg')
 
@@ -145,9 +145,9 @@ def process_image(image):
 
     # applying gradient threshold in X direction
     grad_binary_x = abs_sobel_thresh(undist_image, orient='x', thresh_min=30, thresh_max=100)
-    # plt.figure()
-    # plt.imshow(grad_binary_x,cmap='gray')
-    # plt.title('thersholded x grad')
+    plt.figure()
+    plt.imshow(grad_binary_x,cmap='gray')
+    plt.title('thersholded x grad')
     # applying gradient threshold in Y direction
     grad_binary_y = abs_sobel_thresh(undist_image, orient='y', thresh_min=30, thresh_max=100)
     # plt.figure()
@@ -205,7 +205,7 @@ def process_image(image):
 
     # Assuming you have created a warped binary image called "binary_warped"
     # Take a histogram of the bottom half of the image
-    histogram = np.sum(binary_warped[binary_warped.shape[0] / 2:, :], axis=0)
+    histogram = np.sum(binary_warped[binary_warped.shape[0] // 2:, :], axis=0)
     # Create an output image to draw on and  visualize the result
     out_img = np.dstack((binary_warped, binary_warped, binary_warped)) * 255
     # Find the peak of the left and right halves of the histogram

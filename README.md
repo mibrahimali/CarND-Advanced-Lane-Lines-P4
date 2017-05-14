@@ -16,6 +16,13 @@
 [image12]: ./readme_images/curvature.jpg "Lane Polynomial equation"
 
 [image13]: ./output_images/project_video_out.gif "Project Video Output"
+[image14]: ./output_images/challenge_video_out.gif "Challenge Video Output"
+
+[image15]: ./readme_images/hsv.png "test 1 hsv color space"
+[image16]: ./readme_images/hls.png "test 1 hls color space"
+[image17]: ./readme_images/sobel_x.png "test 1 gradient in x axis"
+[image18]: ./readme_images/hist.png "histogram of wrapped test 1 image"
+[image18]: ./readme_images/window_search.png "window search wrapped test 1 image"
 
 Overview
 ---
@@ -44,10 +51,32 @@ The goals / steps of this project are the following:
 
 ### **Camera calibration**
 ![alt text][image11]
+
+Real cameras use curved lenses to form an image, and light rays often bend a little too much or too little at the edges of these lenses. This creates an effect that distorts the edges of images, so that lines or objects appear more or less curved than they actually are. This is called radial distortion, and it’s the most common type of distortion.
+
+Another type of distortion, is tangential distortion. This occurs when a camera’s lens is not aligned perfectly parallel to the imaging plane, where the camera film or sensor is. This makes an image look tilted so that some objects appear farther away or closer than they actually are.
+
+There are three coefficients needed to correct for radial distortion: k1, k2, and k3, and 2 for tangential distortion: p1, p2. In this project the camera calibration is implemented using OpenCV and a chessboard panel with 9×6 corners.
+
+Starting with using around 20 chessboard images and for every image, we have to set for every image set of real space points and object points using "cv2.findchessboardcorners()" and calculating calibration parameters using "cv2.calibrateCamera()". we only need to do this step once. after that we use "cv2.undistort()" function to undistort camera images.
+
+The code for this step is contained in "camera_calibration.py" and result of calibraion parameters is saved to pickle file to be used in rest of project.
+
+here are some results after calibrating camera and undisort test images
+on left Distorted images and on right undistorted ones
 ![alt text][image1]
+
 ![alt text][image2]
 
 ### **Color transforms**
+At this point, we have an undistorted camera images. we use combination of techniques to detect potintial position of lane lines as follow:
+1- transforming image to HSV color space and masking only white and yellow colors (lane lines normaly are in white and yellow) and binary thershold output.
+![alt text][image15]
+2- transforming image to HLS color space and thershold S channel 
+![alt text][image16]
+3- using Sobel Operator along the x-axis to calculate gradient of image color over RGB image space
+![alt text][image17]
+4- combining all these output in on single binary image (shown bellow sample)
 ![alt text][image4]
 
 ### **Perspective Transformation (Bird Eye View)**
@@ -70,6 +99,9 @@ Potential shortcomings
 1- this pipeline depend on many tunnable parameters to detect lanes which why it's hard to optimize.  
 2- Using gradient thresholding leads to adding noise along with correct lane information 
 3- pipeline utilize only color information through thersholding HSV color space searching for yello and white and HLS space for S channel. this can affect detection incase of shadows , sun glare or night condition  
+
+Here is a look on how badly tunned parameter can affect preformance 
+![alt text][image14]
 
 
 Possible improvements
