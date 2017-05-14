@@ -7,7 +7,7 @@ import matplotlib.image as mpimg
 import numpy as np
 import cv2
 import pickle
-from moviepy.editor import VideoFileClip
+# from moviepy.editor import VideoFileClip
 np.set_printoptions(threshold=np.inf)
 from collections import deque
 
@@ -363,7 +363,7 @@ class LaneFinder:
         cv2.putText(result, 'Right Lane Radius of Curvature = {} m'.format(int(self.right_lane.radius_of_curvature)),
                     (20, 100), font, 1, (255, 255, 255), 2)
 
-        cv2.putText(result, 'Vehicle Offset of lane center  = {} m'.format(np.abs(self.right_lane.line_base_pos - self.left_lane.line_base_pos)),
+        cv2.putText(result, 'Vehicle Offset of lane center  = {} m'.format(np.abs(self.right_lane.line_base_pos - self.left_lane.line_base_pos)/2),
                     (20, 150), font, 1, (255, 255, 255), 2)
 
         return result
@@ -397,10 +397,11 @@ if __name__ == "__main__":
     camera_calibration_data = pickle.load(open("camera_calibration_parameter.p", "rb"))
     # print(camera_calibration_data)
 
-    """
+
     # this part used to precess single test images to insure performance of pipeline introduced here
     for imagefile in images:
         # print(imagefile)
+        advance_lane_finder = LaneFinder()
         file_name = os.path.splitext(os.path.basename(imagefile))[0]
         image = mpimg.imread(imagefile)
         # undistort camera images using calibration prameters obtain in previous step
@@ -409,23 +410,23 @@ if __name__ == "__main__":
 
         result_lane_area, search_area_img, combiend_binary_wraped_img, combiend_binary_img = advance_lane_finder.process(undistored_image)
 
-        # plt.figure()
-        # plt.imshow(result_lane_area)
+        plt.figure()
+        plt.imshow(result_lane_area)
         mpimg.imsave('output_images/{}_final'.format(file_name), result_lane_area)
 
-        # plt.figure()
-        # plt.imshow(search_area_img)
-        mpimg.imsave('output_images/{}_search_area'.format(file_name), search_area_img)
+        # # plt.figure()
+        # # plt.imshow(search_area_img)
+        # mpimg.imsave('output_images/{}_search_area'.format(file_name), search_area_img)
+        #
+        # # plt.figure()
+        # # plt.imshow(combiend_binary_wraped_img,cmap='gray')
+        # mpimg.imsave('output_images/{}_binary_wrapped'.format(file_name), combiend_binary_wraped_img)
+        #
+        # # plt.figure()
+        # # plt.imshow(combiend_binary_img,cmap='gray')
+        # mpimg.imsave('output_images/{}_binary'.format(file_name), combiend_binary_img)
+    plt.show()
 
-        # plt.figure()
-        # plt.imshow(combiend_binary_wraped_img,cmap='gray')
-        mpimg.imsave('output_images/{}_binary_wrapped'.format(file_name), combiend_binary_wraped_img)
-
-        # plt.figure()
-        # plt.imshow(combiend_binary_img,cmap='gray')
-        mpimg.imsave('output_images/{}_binary'.format(file_name), combiend_binary_img)
-    # plt.show()
-    """
 
     def video_process(image):
         undistored_image = cv2.undistort(image, camera_calibration_data['mtx'], camera_calibration_data['dist'], None,
@@ -434,11 +435,11 @@ if __name__ == "__main__":
         return result_lane_area
 
     # create instance of Lane Finder class
-    advance_lane_finder = LaneFinder()
-    challenge_output = 'project_video_out.mp4'
-    clip2 = VideoFileClip('project_video.mp4')
-    challenge_clip = clip2.fl_image(video_process)
-    challenge_clip.write_videofile(challenge_output, audio=False)
+    # advance_lane_finder = LaneFinder()
+    # challenge_output = 'project_video_out.mp4'
+    # clip2 = VideoFileClip('project_video.mp4')
+    # challenge_clip = clip2.fl_image(video_process)
+    # challenge_clip.write_videofile(challenge_output, audio=False)
 
     # advance_lane_finder = LaneFinder()
     # challenge_output = 'challenge_video_out.mp4'
