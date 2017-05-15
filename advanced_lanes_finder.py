@@ -24,13 +24,15 @@ class LaneLine:
         # polynomial coefficients averaged over the last n iterations
         self.best_poly_fit = None
         # polynomial coefficients for the most recent fit
-        self.poly_fit_history = deque(maxlen=10)
+        # self.poly_fit_history = deque(maxlen=10)
+        # x values of best fit
+        self.best_xfitted = []
         # difference in fit coefficients between last and new fits
         self.diffs = np.array([0, 0, 0], dtype='float')
         # x values for detected line pixels
-        self.x = []
+        # self.x = []
         # y values for detected line pixels
-        self.y = []
+        self.y = np.linspace(0, 719, num=720)
         # radius of curvature of the line in some units
         self.radius_of_curvature = None
         # distance in meters of vehicle center from the line
@@ -42,11 +44,13 @@ class LaneLine:
     def update_lane(self, poly_coeff, x_pixels, y_pixels):
         if not self.detected:
             self.detected = True
-            self.poly_fit_history.append(poly_coeff)
+            # self.poly_fit_history.append(poly_coeff)
             self.best_poly_fit = poly_coeff
+            self.best_xfitted = self.best_poly_fit[0] * (self.y ** 2) + self.best_poly_fit[1] * self.y + \
+                                self.best_poly_fit[2]
             self.image_x = x_pixels
             self.image_y = y_pixels
-            self.calculate_lane_x_y()
+            # self.calculate_lane_x_y()
             self.calculate_radius_of_curvature()
             self.calculate_lane_base_in_m()
 
@@ -57,22 +61,22 @@ class LaneLine:
             self.image_x = x_pixels
             self.image_y = y_pixels
             self.diffs = self.best_poly_fit - poly_coeff
-            self.calculate_lane_x_y()
+            # self.calculate_lane_x_y()
             self.calculate_radius_of_curvature()
             self.calculate_lane_base_in_m()
 
     def calculate_lane_x_y(self):
         self.y = np.linspace(0, 719, num=720)  # to cover same y-range as image
-        self.x = self.best_poly_fit[0] * (self.y ** 2) + self.best_poly_fit[1] * self.y + self.best_poly_fit[2]
+        self.best_xfitted = self.best_poly_fit[0] * (self.y ** 2) + self.best_poly_fit[1] * self.y + self.best_poly_fit[2]
 
     def calculate_lane_base_in_m(self):
-        self.line_base_pos = np.abs(self.best_poly_fit[2] - 640)*self.xm_per_pix # lane base position w.r.t vehicle center (image center)
+        self.line_base_pos = self.best_xfitted[-1] * self.xm_per_pix # lane base position w.r.t image left border ( x = 0 ) in world frame
 
     def calculate_radius_of_curvature(self):
 
         y_eval = np.max(self.y)
         # Fit new polynomials to x,y in world space
-        poly_fit_world = np.polyfit(self.y * self.ym_per_pix, self.x * self.xm_per_pix, 2)
+        poly_fit_world = np.polyfit(self.y * self.ym_per_pix, self.best_xfitted * self.xm_per_pix, 2)
         # Calculate the new radii of curvature
         self.radius_of_curvature = ((1 + (2 * poly_fit_world[0] * y_eval * self.ym_per_pix + poly_fit_world[1]) ** 2) ** 1.5) / np.absolute(
             2 * poly_fit_world[0])
@@ -81,11 +85,19 @@ class LaneLine:
         # print('line_base_pos',self.line_base_pos, 'm' , 'radius_of_curvature',self.radius_of_curvature, 'm')
 
     def update_best_fit(self, current_fit):
+        self.alpha = 0  # measurement update confidence
         # check lane base shift value
-        if np.abs(current_fit[2]-self.best_poly_fit[2]) <= 70:
+        current_x = self.current_fit[0] * (self.y ** 2) + self.current_fit[1] * self.y + self.current_fit[2]
+
+        if np.abs(current_x[-1]-self.best_xfitted[-1]) <= 50:
+            if np.abs(current_x[0]-self.best_xfitted[0]) <= 50:
+                self.alpha = 0.5
+            else:
+                self.alpha = 0.2
+
             # apply averaging filter over n time stamp to smooth output
-            sum = np.sum(self.poly_fit_history,axis=0)
-            self.best_poly_fit = sum/len(self.poly_fit_history)
+            self.best_xfitted = ((1-self.alpha)*self.best_xfitted) + (self.alpha * current_x)
+            self.best_poly_fit = np.polyfit(self.y, self.best_xfitted, 2)
             return True
         else:
             # new detection is not correct
@@ -363,7 +375,7 @@ class LaneFinder:
         cv2.putText(result, 'Right Lane Radius of Curvature = {} m'.format(int(self.right_lane.radius_of_curvature)),
                     (20, 100), font, 1, (255, 255, 255), 2)
 
-        cv2.putText(result, 'Vehicle Offset of lane center  = {} m'.format(np.abs(self.right_lane.line_base_pos - self.left_lane.line_base_pos)/2),
+        cv2.putText(result, 'Vehicle Offset of lane center  = {} cm'.format(int(((640*LaneLine().xm_per_pix)-((self.right_lane.line_base_pos + self.left_lane.line_base_pos)/2))*100)),
                     (20, 150), font, 1, (255, 255, 255), 2)
 
         return result
