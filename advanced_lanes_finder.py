@@ -317,7 +317,7 @@ class LaneFinder:
         left_fitx = self.left_lane.best_poly_fit[0] * ploty ** 2 + self.left_lane.best_poly_fit[1] * ploty + self.left_lane.best_poly_fit[2]
         right_fitx = self.right_lane.best_poly_fit[0] * ploty ** 2 + self.right_lane.best_poly_fit[1] * ploty + self.right_lane.best_poly_fit[2]
 
-        margin = 100
+        margin = 50
         # Create an image to draw on and an image to show the selection window
         out_img = np.dstack((wraped_image, wraped_image, wraped_image)) * 255
         window_img = np.zeros_like(out_img)
@@ -382,15 +382,15 @@ class LaneFinder:
 
     def process(self, img):
         # applying S channel threshold in HLS color space
-        sbinary = self.hls_thersholding(img, thresh=(100, 255))
+        sbinary = self.hls_thersholding(img, thresh=(185, 255))
 
         # applying S channel threshold in HLS color space
         hsvbinary = self.hsv_thersholding(img)
         # applying gradient threshold in X direction
-        # grad_binary_x = self.abs_sobel_thersholding(img, orient='x', thresh_min=30, thresh_max=100)
+        grad_binary_x = self.abs_sobel_thersholding(img, orient='x', thresh_min=30, thresh_max=100)
 
-        # combiend_binary = self.combine_or(sbinary,grad_binary_x)
         combiend_binary = self.combine_or(sbinary, hsvbinary)
+        combiend_binary = self.combine_or(combiend_binary, grad_binary_x)
         combiend_binary_img = np.dstack((combiend_binary, combiend_binary, combiend_binary)) *255
         combiend_binary_wraped = self.prespective_transform_image(combiend_binary)
         combiend_binary_wraped_img = np.dstack((combiend_binary_wraped, combiend_binary_wraped, combiend_binary_wraped)) * 255
@@ -422,21 +422,21 @@ if __name__ == "__main__":
 
         result_lane_area, search_area_img, combiend_binary_wraped_img, combiend_binary_img = advance_lane_finder.process(undistored_image)
 
-        plt.figure()
-        plt.imshow(result_lane_area)
+        # plt.figure()
+        # plt.imshow(result_lane_area)
         mpimg.imsave('output_images/{}_final'.format(file_name), result_lane_area)
 
-        # # plt.figure()
-        # # plt.imshow(search_area_img)
-        # mpimg.imsave('output_images/{}_search_area'.format(file_name), search_area_img)
+        # plt.figure()
+        # plt.imshow(search_area_img)
+        mpimg.imsave('output_images/{}_search_area'.format(file_name), search_area_img)
         #
-        # # plt.figure()
-        # # plt.imshow(combiend_binary_wraped_img,cmap='gray')
-        # mpimg.imsave('output_images/{}_binary_wrapped'.format(file_name), combiend_binary_wraped_img)
+        # plt.figure()
+        # plt.imshow(combiend_binary_wraped_img,cmap='gray')
+        mpimg.imsave('output_images/{}_binary_wrapped'.format(file_name), combiend_binary_wraped_img)
         #
-        # # plt.figure()
-        # # plt.imshow(combiend_binary_img,cmap='gray')
-        # mpimg.imsave('output_images/{}_binary'.format(file_name), combiend_binary_img)
+        # plt.figure()
+        # plt.imshow(combiend_binary_img,cmap='gray')
+        mpimg.imsave('output_images/{}_binary'.format(file_name), combiend_binary_img)
     plt.show()
 
 
